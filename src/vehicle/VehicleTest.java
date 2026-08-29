@@ -1,5 +1,9 @@
 package vehicle;
 
+import vehicle.exceptions.VehicleAlreadyExistsException;
+import vehicle.exceptions.VehicleNotAvailableException;
+import vehicle.exceptions.VehicleNotFoundException;
+
 public class VehicleTest {
 	public static void main(String[] args) {
 
@@ -20,11 +24,89 @@ public class VehicleTest {
 
 		VehicleService service = new VehicleService();
 
-		service.addVehicle(car);
-		service.addVehicle(bike);
+		try {
+
+			service.addVehicle(car);
+			service.addVehicle(bike);
+
+		} catch (VehicleAlreadyExistsException e) {
+
+			System.out.println("Add Vehicle Error: " + e.getMessage());
+		}
+		try {
+
+			service.addVehicle(car);
+
+		} catch (VehicleAlreadyExistsException e) {
+
+			System.out.println("Add Vehicle Error: " + e.getMessage());
+		}
 
 		System.out.println("\n--- All Vehicles ---");
 
 		service.displayAllVehicles();
+		try {
+
+			Vehicle foundVehicle = service.findVehicle("CAR101");
+
+			System.out.println("\nVehicle Found:");
+			System.out.println(foundVehicle.getBrand() + " " + foundVehicle.getModel());
+
+		} catch (VehicleNotFoundException e) {
+
+			System.out.println("Error: " + e.getMessage());
+		}
+		try {
+
+			service.rentVehicle("CAR101");
+
+		} catch (VehicleNotFoundException | VehicleNotAvailableException e) {
+
+			System.out.println("Rental Error: " + e.getMessage());
+		}
+		try {
+
+			service.rentVehicle("CAR101");
+
+		} catch (VehicleNotFoundException | VehicleNotAvailableException e) {
+
+			System.out.println("Rental Error: " + e.getMessage());
+		}
+		try {
+
+			service.returnVehicle("CAR101");
+
+		} catch (VehicleNotFoundException e) {
+
+			System.out.println("Return Error: " + e.getMessage());
+		}
+		System.out.println("\n--- Vehicles After Return ---");
+		service.displayAllVehicles();
+		try {
+
+			service.removeVehicle("BIKE101");
+
+		} catch (VehicleNotFoundException e) {
+
+			System.out.println("Remove Error: " + e.getMessage());
+		}
+		System.out.println("\n--- Vehicles After Removal ---");
+		service.displayAllVehicles();
+		try {
+
+			service.removeVehicle("CAR999");
+
+		} catch (VehicleNotFoundException e) {
+
+			System.out.println("Remove Error: " + e.getMessage());
+		}
+		try {
+
+			service.findVehicle("CAR999");
+
+		} catch (VehicleNotFoundException e) {
+
+			System.out.println("Find Error: " + e.getMessage());
+		}
 	}
 }
